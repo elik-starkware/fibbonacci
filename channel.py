@@ -1,26 +1,33 @@
-import random
-from hash_chain import HashChain
+from queue import Queue
+from hashlib import sha256
 
 class Channel:
-    def __init__(self, field_max_element: int, seed=None):
+    def __init__(self, F):
         """Initialize the channel with an optional random seed."""
-        self.messages = [field_max_element]
-        self.hash_chain = HashChain(seed)
+        self.messages = Queue()
+        self.F = F
 
-    def send(self, message):
+    def send(self, message: dict[str, int | str]):
         """Send (store) a message in the channel."""
-        self.messages.append(message)
+        self.messages.put(message)
 
     def receive(self):
         """Receive (retrieve) the last message sent."""
-        return self.messages[-1] if self.messages else None
+        return self.messages.get()
 
     def get_all_messages(self):
         """Retrieve all messages exchanged."""
-        return self.messages
+        return list(self.messages.queue)
 
-    def receive_random(self):
+    def _get_hash(self):
+        return sha256("".join(map(lambda x: x["data"], self.messages.queue)).encode()).hexdigest()
+
+    def receive_random_field_element(self, title: str = "Random Field Element"):
+        # TODO change with nonce
         """Generate a random f"""
-        random_element = self.hash_chain.next()
-        self.messages.append(random_element)
-        return random_element
+        random_field_element = self.F(int(self._get_hash(), 16))
+        self.messages.put({
+            "title": title,
+            "data": str(random_field_element)
+        })
+        return random_field_element

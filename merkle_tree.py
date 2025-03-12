@@ -12,11 +12,7 @@ class MerkleTree:
         layer_index = 0
         path.append(self.tree[layer_index][leaf_index])
         while layer_index < len(self.tree) - 1:
-            if leaf_index % 2 == 1:
-                path.append(self.tree[layer_index][leaf_index-1])
-            else:
-                path.append(self.tree[layer_index][leaf_index+1])
-
+            path.append(self.tree[layer_index][leaf_index + 1 if leaf_index % 2 == 0 else leaf_index - 1])
             layer_index += 1
             leaf_index = leaf_index // 2
         return path
@@ -35,5 +31,5 @@ class MerkleTree:
     def _build_layer(self, layer: list[int]) -> list[int]:
         new_layer = []
         for i in range(0, len(layer), 2):
-            new_layer.append(sha256((layer[i]+ layer[i+1]).encode()).hexdigest())
+            new_layer.append(sha256((layer[i]+ layer[i + 1]).encode()).hexdigest())
         return new_layer
