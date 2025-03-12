@@ -1,6 +1,6 @@
 from queue import Queue
-from hashlib import sha256
 from pickle import dumps
+from hash import my_hash
 
 
 class Channel:
@@ -22,7 +22,7 @@ class Channel:
         return list(self.messages.queue)
 
     def _get_hash(self):
-        return sha256("".join(map(lambda x: str(dumps(x)), self.messages.queue)).encode()).hexdigest()
+        return my_hash("".join(map(lambda x: str(dumps(x)), self.messages.queue)))
 
     def receive_random_field_element(self, title: str = "Random Field Element"):
         # TODO change with nonce
