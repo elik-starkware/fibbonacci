@@ -1,6 +1,7 @@
 from queue import Queue
 from hashlib import sha256
 
+
 class Channel:
     def __init__(self, F):
         """Initialize the channel with an optional random seed."""
